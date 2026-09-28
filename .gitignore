@@ -1,0 +1,19 @@
+# Build artifacts
+*.exe
+*.test
+*.out
+bin/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Editor files
+.idea/
+.vscode/
+
+# Test and temporary output
+coverage.out
+tmp/
+
