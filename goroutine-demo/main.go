@@ -1,28 +1,33 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"time"
 )
 
-func main() {
-	messages := make(chan string, 1)
+func waitForWork(ctx context.Context) {
 
-	go sendMessage(messages)
+	fmt.Println("work started")
 
-	fmt.Println("main is waiting")
+	select {
+	case <-time.After(5 * time.Second):
+		fmt.Println("work completed")
 
-	time.Sleep(2 * time.Second)
-
-	fmt.Println("main receives message")
-
-	message := <-messages
-	fmt.Println("received:", message)
+	case <-ctx.Done():
+		fmt.Println("work cancelled:", ctx.Err())
+	}
 }
 
-func sendMessage(message chan string) {
-	fmt.Println("before sending")
-	message <- "hello"
-	
-	fmt.Println("after sending")
+func main() {
+
+	ctx, cancel := context.WithTimeout(
+		context.Background(),
+		2*time.Second,
+	)
+	defer cancel()
+
+	waitForWork(ctx)
+
+	fmt.Println("main finished")
 }
